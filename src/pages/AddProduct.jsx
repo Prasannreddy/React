@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 function AddProduct() {
   const [title, setTitle] = useState("");
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
 
   const handleSave = async () => {
@@ -25,6 +26,11 @@ function AddProduct() {
       <input
         placeholder="Product title"
         onChange={(e) => setTitle(e.target.value)}
+      />
+      <br/><br/>
+      <input
+        placeholder="useremail"
+        onChange={(e) => setEmail(e.target.value)}
       />
 
       <br /><br />
