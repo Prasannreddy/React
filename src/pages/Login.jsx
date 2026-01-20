@@ -3,48 +3,59 @@ import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
 
-    const response = await fetch("https://fakestoreapi.com/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
-    });
+    if (!username) {
+      setError("Please enter username");
+      return;
+    }
 
-    const data = await response.json();
+    const res = await fetch("https://fakestoreapi.com/users");
+    const users = await res.json();
 
-    if (data.token) {
-      localStorage.setItem("token", data.token);
+    const user = users.find(
+      (u) => u.username === username
+    );
+
+    if (user) {
+      localStorage.removeItem("token"); 
+      localStorage.setItem("user", JSON.stringify(user)); 
       navigate("/products");
     } else {
-      alert("Invalid username or password");
+      setError("Invalid username");
     }
   };
 
   return (
-    <div className="login-container">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h2>Please Login</h2>
+    <div style={{
+      height: "100vh",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center"
+    }}>
+      <form onSubmit={handleLogin}>
+        <h2>Login</h2>
 
         <input
-          type="text"
           placeholder="Username"
-          value={username}
           onChange={(e) => setUsername(e.target.value)}
-          required
         />
-
+        <br/>
+        <br/>
         <input
           type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          placeholder="password"
+          onChange={() => {}}
         />
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        <br/>
+        <br/>
 
         <button type="submit">Login</button>
       </form>
@@ -53,4 +64,3 @@ function Login() {
 }
 
 export default Login;
-
